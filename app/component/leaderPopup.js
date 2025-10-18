@@ -2,9 +2,18 @@ import { X } from "lucide-react";
 import { students, questionsData, messages } from "./data.js";
 
 export default function LeaderboardPopup({ openLeadPopup, openPopup, userId }) {
-  const storedData = localStorage.getItem(`quizProgress_${userId}`);
-  const score = storedData ? JSON.parse(storedData).score : 0;
-  const percentage = Math.round((score / questionsData.length) * 100);
+  
+    const [score, setScore] = useState(0);
+
+   useEffect(() => {
+      if (typeof window !== "undefined") {
+        const storedData = localStorage.getItem(`quizProgress_${userId}`);
+        if (storedData) {
+          setScore(JSON.parse(storedData).score||0);
+        }
+      }
+    }, [userId]);
+     const percentage = Math.round((score / questionsData.length) * 100);
 
   let messageText = "";
   if (percentage >= 80) {

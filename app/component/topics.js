@@ -6,21 +6,29 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 export default function Topics({ isFullWidth, userId }) {
   const [progress, setProgress] = useState(0);
+  const [score, setScore] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
   const [expandedTopics, setExpandedTopics] = useState({ 0: true });
   const progressRef = useRef(null);
 
-  const storedData = localStorage.getItem(`quizProgress_${userId}`);
-  const score = storedData ? JSON.parse(storedData).score : 0;
-  const percentage = Math.round((score / questionsData.length) * 100);
 
+ 
+
+   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedData = localStorage.getItem(`quizProgress_${userId}`);
+      if (storedData) {
+        setScore(JSON.parse(storedData).score||0);
+      }
+    }
+  }, [userId]);
+   const percentage = Math.round((score / questionsData.length) * 100);
   const toggleTopic = (topicIdx) => {
     setExpandedTopics((prev) => ({
       ...prev,
       [topicIdx]: !prev[topicIdx],
     }));
   };
-
   const animateProgress = useCallback(() => {
     let current = 0;
     const increment = percentage / 60;
